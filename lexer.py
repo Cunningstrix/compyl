@@ -1,11 +1,11 @@
 import re
 
 TOKENS : dict[str, str] = {
-    'IDENTIFIER' :      r'[a-zA-Z_]\w*\b',
-    'COONSTANT' :        r'[0-9]+\b',
     'INT':              r'int\b',
     'VOID':             r'void\b',
     'RETURN':           r'return\b',
+    'IDENTIFIER' :      r'[a-zA-Z_]\w*\b',
+    'CONSTANT' :        r'[0-9]+\b',
     'OPEN_PARENTHESIS': r'\(',
     'CLOSE_PARENTHESIS':r'\)',
     'OPEN_BRACE':       r'{',
@@ -29,7 +29,7 @@ class Lexer:
 
             if found == 'SKIP':
                 continue
-            elif found == "MISSMATCH":
+            elif found == 'MISSMATCH':
                 raise SyntaxError(f'Syntax missmatch : {val}')
             else:
                 tokens.append((found,val))
