@@ -28,7 +28,14 @@ class Constant:
     def __init__(self,value : int):
         self.value : int = value
     def __str__(self):
-        return f"""\tConstant({self.value})"""
+        return f"""Constant({self.value})"""
+
+class UnaryOps:
+    def __init__(self, op, operand):
+        self.op = op
+        self.operand = operand
+    def __str__(self):
+        return f'\tUnaryOp({self.op}({self.operand}))'
 
 class Parser:
     def __init__(self,tokens):
@@ -66,12 +73,20 @@ class Parser:
         else:
             raise SyntaxError(f'Expected return INT; at index {self.pos}' )
     
-    def parse_expression(self) -> Constant:
+    def parse_expression(self):
         tok = self.current()
-        if tok[0] == 'CONSTANT':
-            val  = int(self.expect('CONSTANT'))
-            return Constant(val)
-        raise SyntaxError(f"Expected int at index {self.pos}" )
+        match tok[0]:
+            case 'CONSTANT':
+                val  = int(self.expect('CONSTANT'))
+                return Constant(val)
+            case 'BITWISE_COMP_OPS' | 'NEGATION_OPS':
+                op = self.expect(tok[0])
+                operand = self.parse_expression()
+                return UnaryOps(op, operand)
+            case 'DECREMENT':
+                raise SyntaxError('Cant use -- at the moment')
+            case _:
+                raise SyntaxError(f"Expected int at index {self.pos}" )
 
     def expect(self,kind):
         tok = self.current()

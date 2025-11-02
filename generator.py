@@ -5,9 +5,11 @@ class CodeGenerator:
         self.output = []
     
     def generate(self, program):
-        self.output.append('section .text')
+        self.output.append('\t.section .text')
+        self.output.append('\t.globl main')
         for f in program.functions:
             self.generate_function(f)
+        self.output.append('\t.section .note.GNU-stack,"",@progbits')
         return '\n'.join(self.output)
     
     def generate_function(self, f):
@@ -21,4 +23,5 @@ class CodeGenerator:
 
     def generate_expression(self, e):
         if isinstance(e, Constant):
+            #Mov(src, dst) :  movl src, dst
             self.output.append(f'\tmovl ${e.value}, %eax')
